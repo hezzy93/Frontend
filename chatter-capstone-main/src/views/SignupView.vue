@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios'; // Import axios for HTTP requests
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../FirebaseConfig'; 
 
 const email = ref('');
 const password = ref('');
@@ -16,20 +17,14 @@ const signUp = async () => {
   }
 
   try {
-    const response = await axios.post('https://skilltop-internship-1.onrender.com/apidocs/#/Users/post_api_v1_register', {
-      email: email.value,
-      password: password.value
-    });
-    if (response.status === 201) {
-      router.push('/login'); // Redirect to login after successful signup
-    }
+    await createUserWithEmailAndPassword(auth, email.value, password.value);
+    router.push('/login'); // Redirect to login after successful signup
   } catch (err) {
-    const errorMessage = (err as Error).message;
-    error.value = errorMessage;
-  }
+  const errorMessage = (err as Error).message;
+  error.value = errorMessage;
+}
 };
 </script>
-
 
 <template>
     <div id="signup-frame"> 
